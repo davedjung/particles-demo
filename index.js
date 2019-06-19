@@ -1,3 +1,4 @@
+/* global simulateWrapper */
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 const hist = document.getElementById('histogram')
@@ -98,7 +99,10 @@ function simulate (options = {}) {
     drawBox(particleList, i * dt - startTime)
   }
 
-  const worker = new Worker('simulate.js')
+  // Web worker initialization workaround for Chrome browser
+  // By Tomáš Zato @ Stack Overflow
+  // See: https://stackoverflow.com/questions/21408510/chrome-cant-load-web-worker/33432215#33432215
+  const worker = new Worker(URL.createObjectURL(new Blob(["("+simulateWrapper.toString()+")()"], {type: 'text/javascript'})));
   let renderDone = true
   let workerJobDone = false
   let pendingData = {}

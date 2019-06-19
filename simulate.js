@@ -1,3 +1,4 @@
+function simulateWrapper() {
 const vector = {
   args: [],
   multiply: function (c) {
@@ -186,4 +187,9 @@ onmessage = function (event) {
     break
   default:
   }
+}
+}
+
+if (window != self) {
+  simulateWrapper()
 }
