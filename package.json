@@ -1,0 +1,11 @@
+{
+  "name": "boltzmann-demo",
+  "version": "0.0.1",
+  "browser": "index.js",
+  "author": "Myeongseop Jeon",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "eslint": "^5.16.0"
+  }
+}
