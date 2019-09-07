@@ -9,12 +9,12 @@ function simulate (options = {}) {
   const {
     width = 320, // Box width (px)
     height = 240, // Box height (px)
-    r = 2, // Particle radius (px)
-    tMax = 10000, // Max simulation time (ms)
+    r = 0.5, // Particle radius (px)
+    tMax = 100000, // Max simulation time (ms)
     dt = 50, // Time interval between screen refreshes (ms)
     timestamp = 10, // Number of screen refreshes between timestamps
-    n = 100, // Number of particles
-    vMean = 0.08, // Target mean velocity of particles (px/ms)
+    n = 1000, // Number of particles
+    vMean = 0.1, // Target mean velocity of particles (px/ms)
     dist = 'uniform', // Speed distribution of particles (uniform / delta)
     bins = Math.ceil(Math.log2(n)) + 1, // Number of intervals in histogram
     xMax = 3 * vMean, // Max value of x in histogram plot
