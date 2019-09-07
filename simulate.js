@@ -92,6 +92,81 @@ function proceed () {
     let tmp = null // Candidates for dtMin
     let wallDirection = null // Direction of normal vector; 0 is x, 1 is y
 
+    //Performance mode implementation
+    //  1. Proceed with dt
+    //  2. Handle collision between particles
+    //  3. Handle collision with boundary
+    
+    //  1. Proceed with dt
+    for (let i = 0; i < curr.length; i++) {
+      next[i] = { r: curr[i].r.linearOp(curr[i].v, [1, dt]), v: curr[i].v }
+    }
+    
+    
+    //  2. Handle collision between particles
+    for (let i = 0; i < curr.length; i++) {
+        for (let j = i+1; j < curr.length; j++) {
+            let d = Math.sqrt(Math.pow(next[i].r.args[0] - next[j].r.args[0],2) + Math.pow(next[i].r.args[1] - next[j].r.args[1],2))
+            if (d <= r) {
+                const a = next[i]
+                const b = next[j]
+                const dr = b.r.subtract(a.r)
+                const dv = b.v.subtract(a.v)
+                const dva = dr.multiply(dv.dot(dr) / dr.dot(dr))
+                a.v = a.v.add(dva)
+                b.v = b.v.subtract(dva)
+            }
+        }
+    }
+    
+    //  3. Handle collision with boundary
+    for (let i = 0; i < curr.length; i++) {
+        if (next[i].r.args[0] + r >= width && next[i].v.args[0] >= 0) {
+            next[i].v.args[0] *= -1
+        }
+        if (next[i].r.args[0] - r <= 0 && next[i].v.args[0] <= 0) {
+            next[i].v.args[0] *= -1
+        }
+        if (next[i].r.args[1] + r >= height && next[i].v.args[1] >= 0) {
+            next[i].v.args[1] *= -1
+        }
+        if (next[i].r.args[1] - r <= 0 && next[i].v.args[1] <= 0) {
+            next[i].v.args[1] *= -1
+        }
+    }
+    
+      
+    listSelect = !listSelect
+    
+    dtMin = dt
+      
+    if (timeAhead + dtMin >= dt) {
+      const startTime = timeAhead
+      timeAhead += dtMin
+      const di = Math.floor(timeAhead / dt)
+      timeAhead = timeAhead % dt
+      iterations += di
+      if (iterations % timestamp === 0) {
+        console.log(`Elapsed time since simulation start = ${ Date.now() - simStart }`)
+      }
+      postMessage({
+        type: 'proceeded',
+        startTime,
+        di,
+        particleList: curr
+      })
+      break
+    }
+      
+    timeAhead += dtMin
+    
+    
+    
+    
+    
+    
+    //----------------------------------------------------------------------
+      /*
     for (let i = 0; i < curr.length; i++) {
       if (!curr[i].v.isZero()) {
         const vWallCollisionTime = (curr[i].v.args[0] >= 0) ? (width - curr[i].r.args[0] - r) / curr[i].v.args[0] : (curr[i].r.args[0] - r) / -curr[i].v.args[0]
@@ -171,6 +246,8 @@ function proceed () {
       break
     }
     timeAhead += dtMin
+      */
+      //----------------------------------------------------
   }
 }
 
